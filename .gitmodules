@@ -1,0 +1,3 @@
+[submodule "trading-store"]
+	path = trading-store
+	url = https://github.com/BaksaZoo/trading-store.git
