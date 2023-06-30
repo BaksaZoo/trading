@@ -4,3 +4,6 @@
 [submodule "trading-basket"]
 	path = trading-basket
 	url = https://github.com/BaksaZoo/trading-basket.git
+[submodule "trading-core"]
+	path = trading-core
+	url = https://github.com/BaksaZoo/trading-core.git
