@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/realm-export.json
+      - DB_VENDOR=POSTGRES
+      - DB_ADDR=postgres
+      - DB_USER=user
+      - DB_PASSWORD=Password123
+    networks:
+      - trading-network
+    volumes:
+      - ../keycloak/realm-export.json:/tmp/realm-export.json
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=Password123
+    volumes:
+      - ../db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - trading-network
+  basket-app:
+    build:
+      context: ..
+      dockerfile: ./trading-basket/Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - trading-network
+    depends_on:
+      - store-app
+      - postgres
+      - keycloak
+  store-app:
+    build:
+      context: ..
+      dockerfile: ./trading-store/Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - trading-network
+    depends_on:
+      - postgres
+      - keycloak
+
+networks:
+  trading-network:
